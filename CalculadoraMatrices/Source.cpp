@@ -9,6 +9,7 @@ void handleClickCalculadoraMatrices(HWND);
 
 void showMenuInicio();
 void showCalculadoraMatricesDialog();
+void addComboBoxItems(HWND, int);
 
 HINSTANCE hGlobalInstance;
 
@@ -49,10 +50,9 @@ BOOL CALLBACK fMenuInicioDialog(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 		if (HIWORD(wparam) == BN_CLICKED) {
 			switch (LOWORD(wparam))
 			{
-			case BTN_MENU_CALCULADORA_MATRICES:
-				handleClickCalculadoraMatrices(hwnd);
-				break;
-			
+				case BTN_MENU_CALCULADORA_MATRICES:
+					handleClickCalculadoraMatrices(hwnd);
+					break;
 			}
 		}
 
@@ -73,6 +73,14 @@ BOOL CALLBACK fMenuInicioDialog(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 BOOL CALLBACK fCalculadoraMatricesDialog(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	switch (msg)
 	{
+		case WM_INITDIALOG:
+		{
+			addComboBoxItems(hwnd, COLUMNAS_1);
+			addComboBoxItems(hwnd, COLUMNAS_2);
+			addComboBoxItems(hwnd, FILAS_1);
+			addComboBoxItems(hwnd, FILAS_2);
+		}
+		break;
 		case WM_COMMAND:
 		{
 
@@ -83,7 +91,6 @@ BOOL CALLBACK fCalculadoraMatricesDialog(HWND hwnd, UINT msg, WPARAM wparam, LPA
 					case BTN_MENU_CALCULADORA_MATRICES:
 						handleClickCalculadoraMatrices(hwnd);
 						break;
-
 				}
 			}
 
@@ -112,4 +119,14 @@ void showCalculadoraMatricesDialog() {
 	HWND ventana = CreateDialog(hGlobalInstance, MAKEINTRESOURCE(CALCULADORA_MATRICES), NULL, fCalculadoraMatricesDialog);
 	//SetMenu(ventana, menu);
 	ShowWindow(ventana, SW_SHOW);
+}
+
+void addComboBoxItems(HWND hwnd,int id) {
+	HWND hComboBoxColumnas = GetDlgItem(hwnd, id);
+	SendMessage(hComboBoxColumnas, CB_ADDSTRING, NULL, (LPARAM)"1");
+	SendMessage(hComboBoxColumnas, CB_ADDSTRING, NULL, (LPARAM)"2");
+	SendMessage(hComboBoxColumnas, CB_ADDSTRING, NULL, (LPARAM)"3");
+	SendMessage(hComboBoxColumnas, CB_ADDSTRING, NULL, (LPARAM)"4");
+	SendMessage(hComboBoxColumnas, CB_ADDSTRING, NULL, (LPARAM)"5");
+	SendMessage(hComboBoxColumnas, CB_ADDSTRING, NULL, (LPARAM)"6");
 }
