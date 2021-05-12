@@ -13,9 +13,13 @@
 #define COLUMNAS_1                      1007
 #define BTN_CREAR_MATRIZ_1              1008
 #define FILAS_2                         1009
-#define IDC_COMBO4                      1010
 #define COLUMNAS_2                      1010
 #define BTN_CREAR_MATRIZ_2              1011
+#define BTN_SUMAR_MATRIZ                1012
+#define BTN_RESTAR_MATRIZ               1013
+#define BTN_MIULTIPLICAR_MATRIZ         1014
+#define MATRIZ_A_CONTAINER              1016
+#define MATRIZ_B_CONTAINER              1017
 
 // Next default values for new objects
 // 
@@ -23,7 +27,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        105
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1012
+#define _APS_NEXT_CONTROL_VALUE         1018
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
