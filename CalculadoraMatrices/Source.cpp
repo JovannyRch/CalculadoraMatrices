@@ -3,12 +3,16 @@
 #include <iostream>
 #include <string> 
 #include <stdlib.h>
+#include <string.h>
+#include <sstream>
 
 #define MAX 10
 using namespace std;
 
 BOOL CALLBACK fMenuInicioDialog(HWND, UINT, WPARAM, LPARAM);
 BOOL CALLBACK fCalculadoraMatricesDialog(HWND, UINT, WPARAM, LPARAM);
+BOOL CALLBACK fResultadoMatrizDialog(HWND, UINT, WPARAM, LPARAM);
+BOOL CALLBACK fMatrizCompuestaDialog(HWND, UINT, WPARAM, LPARAM);
 
 void handleClickCalculadoraMatrices(HWND);
 
@@ -18,6 +22,8 @@ void showCalculadoraMatricesDialog();
 void addComboBoxItems(HWND, int);
 void setMatrizInput(HWND, int, int , int, int);
 void handleSumarMatrizClick(HWND);
+void handleRestarMatricesClick(HWND);
+
 bool validarSumaResta();
 
 
@@ -29,7 +35,9 @@ int columnas1, filas1;
 int columnas2, filas2;
 float matrizResultado[MAX][MAX];
 
+
 //Helpers
+string FloatToString(float);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrev, PSTR cmdLine, int cShow) {
 
@@ -56,6 +64,40 @@ void showMenuInicio() {
 
 //Callbacks de los dialogos
 
+
+
+BOOL CALLBACK fResultadoMatrizDialog(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+	switch (msg)
+	{
+		case WM_INITDIALOG:
+		{
+			HWND resultadoContainer = GetDlgItem(hwnd, RESULTADO_CONTAINER);
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 2; j++) {
+					
+					HWND editControl = CreateWindowEx(0, L"EDIT",
+						NULL,
+						WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_AUTOVSCROLL,
+						20 + j * 30, (20 + (i * 30)) + 10, 30, 30,
+						resultadoContainer, (HMENU)8000,
+						GetModuleHandle(NULL), 0);
+					float number = 10.0;
+					string numberStr = to_string(number);
+					SetWindowText(editControl, (LPCWSTR)numberStr.c_str());
+				}
+			}
+		}
+		break;
+		case WM_CLOSE:
+			DestroyWindow(hwnd);
+			break;
+		case WM_DESTROY:
+			PostQuitMessage(1);
+			break;
+	}
+
+	return false;
+}
 
 BOOL CALLBACK fMenuInicioDialog(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	switch (msg)
@@ -115,6 +157,9 @@ BOOL CALLBACK fCalculadoraMatricesDialog(HWND hwnd, UINT msg, WPARAM wparam, LPA
 					case BTN_SUMAR_MATRIZ:
 						handleSumarMatrizClick(hwnd);
 						break;
+					case BTN_RESTAR_MATRIZ:
+						handleRestarMatricesClick(hwnd);
+						break;
 				}
 			}
 
@@ -132,10 +177,16 @@ BOOL CALLBACK fCalculadoraMatricesDialog(HWND hwnd, UINT msg, WPARAM wparam, LPA
 }
 
 
+
 //Clicks handlers
 void handleClickCalculadoraMatrices(HWND hwnd) {
 	ShowWindow(hwnd, SW_HIDE);
 	showCalculadoraMatricesDialog();
+}
+
+void handleRestarMatricesClick(HWND hwnd) {
+	HWND ventana = CreateDialog(hGlobalInstance, MAKEINTRESOURCE(MATRIZ_RESULTADO), NULL, fResultadoMatrizDialog);
+	ShowWindow(ventana, SW_SHOW);
 }
 
 void showCalculadoraMatricesDialog() {
@@ -173,6 +224,10 @@ void handleSumarMatrizClick(HWND hwnd) {
 		}
 	}
 
+	//HMENU menu = LoadMenu(hGlobalInstance, MAKEINTRESOURCE(IDR_MENU1));
+	HWND ventana = CreateDialog(hGlobalInstance, MAKEINTRESOURCE(MATRIZ_RESULTADO), NULL, fResultadoMatrizDialog);
+	//SetMenu(ventana, menu);
+	ShowWindow(ventana, SW_SHOW);
 	
 
 }
@@ -185,21 +240,6 @@ bool validarSumaResta() {
 	if (filas1 != filas2) {
 		return false;
 	}
-
-	if (columnas1 != filas2) {
-		return false;
-	}
-
-	if (columnas2 != filas1) {
-		return false;
-	}
-	if (filas1 != columnas1) {
-		return false;
-	}
-	if (filas2 != columnas2) {
-		return false;
-	}
-
 
 	return true;
 }
@@ -263,4 +303,10 @@ string convertToString(char* a, int size)
 		s = s + a[i];
 	}
 	return s;
+}
+
+string FloatToString(float number) {
+	std::ostringstream buff;
+	buff << number;
+	return buff.str();
 }
